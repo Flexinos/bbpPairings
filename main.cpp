@@ -1,21 +1,3 @@
-/*
- * This file is part of BBP Pairings, a Swiss-system chess tournament engine
- * Copyright (C) 2016  Jeremy Bierema
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License, version 3.0, as
- * published by the Free Software Foundation.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
-
-
 #include <chrono>
 #include <exception>
 #ifdef EXPERIMENTAL_FILESYSTEM
@@ -119,10 +101,7 @@ namespace
     if (!FILESYSTEM_NS::path(filename).has_parent_path())
     {
       filename =
-        FILESYSTEM_NS::absolute(
-          filename,
-          FILESYSTEM_NS::path(pathBase).remove_filename()
-        ).string();
+        FILESYSTEM_NS::path(pathBase).replace_filename(filename).string();
     }
 #endif
   }

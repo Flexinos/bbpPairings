@@ -1,21 +1,3 @@
-/*
- * This file is part of BBP Pairings, a Swiss-system chess tournament engine
- * Copyright (C) 2016  Jeremy Bierema
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License, version 3.0, as
- * published by the Free Software Foundation.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
-
-
 #ifndef UINT_H
 #define UINT_H
 #include <algorithm>
@@ -311,7 +293,7 @@ namespace utility
       template <
         typename T,
         typename = typename std::enable_if<std::is_arithmetic<T>::value>::type>
-      constexpr operator T() const
+      explicit constexpr operator T() const
       {
         if (
           std::is_floating_point<T>::value
@@ -327,7 +309,7 @@ namespace utility
           uint<pieces> mod = *this;
           const uint<pieces> quotient = mod.modGetQuotient(divisor);
           assert(quotient < *this);
-          return T{ quotient } * divisor + mod;
+          return (T) (T{ quotient } * divisor + mod);
         }
         else if (std::is_same<T, bool>::value)
         {
@@ -335,7 +317,7 @@ namespace utility
         }
         else
         {
-          return lowPieces;
+          return (T) lowPieces;
         }
       }
 
@@ -604,7 +586,7 @@ namespace utility
       }
 
       template <typename T>
-      constexpr operator T() const
+      explicit constexpr operator T() const
       {
         return highPiece;
       }
@@ -869,7 +851,8 @@ namespace utility
       }
       else
       {
-        return uint<pieces>{ value0 } + value1;
+        return
+          (detail::preferred_type<pieces, T>) uint<pieces>{ value0 } + value1;
       }
     }
     template <std::size_t pieces, typename T>
@@ -908,7 +891,8 @@ namespace utility
       }
       else
       {
-        return uint<pieces>{ value0 } - value1;
+        return
+          (detail::preferred_type<pieces, T>) uint<pieces>{ value0 } - value1;
       }
     }
     template <std::size_t pieces, typename T>

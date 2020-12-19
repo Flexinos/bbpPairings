@@ -1,21 +1,3 @@
-/*
- * This file is part of BBP Pairings, a Swiss-system chess tournament engine
- * Copyright (C) 2016  Jeremy Bierema
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License, version 3.0, as
- * published by the Free Software Foundation.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
-
-
 #include <algorithm>
 #include <cassert>
 #include <cstdint>
@@ -259,8 +241,7 @@ namespace swisssystems
           const std::unordered_map<score_difference, score_difference_shift>
             &scoreDifferenceShifts,
           const tournament::points minScoreInBracket,
-          optimality_matching_computer::edge_weight &maxEdgeWeight =
-            optimality_matching_computer::edge_weight{ 0u })
+          optimality_matching_computer::edge_weight &maxEdgeWeight)
       {
         typename
             std::conditional<
@@ -1475,7 +1456,9 @@ namespace swisssystems
           if (exchange)
           {
             --exchangesRemaining;
+
             // Finalize that this player must be exchanged.
+
             for (
               decltype(remainder)::const_iterator opponentIterator =
                 remainder.begin();
@@ -1487,6 +1470,18 @@ namespace swisssystems
                 *playerIterator,
                 *opponentIterator,
                 baseEdgeWeights[*playerIterator][*opponentIterator]);
+            }
+
+            for (
+              tournament::player_index opponentIndex = nextScoreGroupBegin;
+              opponentIndex < playersByIndex.size();
+              ++opponentIndex)
+            {
+              baseEdgeWeights[opponentIndex][*playerIterator] &= 0u;
+              optimalityMatchingComputer.setEdgeWeight(
+                *playerIterator,
+                opponentIndex,
+                baseEdgeWeights[opponentIndex][*playerIterator]);
             }
           }
           if (!alreadyExchanged)
